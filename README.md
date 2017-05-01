@@ -9,7 +9,7 @@ A stater kit with Roles and Permissions implementation on Laravel 5.4
 ### Add a new Resource
 1. Create desired resource by running 
  ```bash
-## Create Comment model with migration and resource controller ##
+## Create Comment model with migration and resource controller
 php artisan make:model Comment -m -c --resource
 ```
 2. Register route for it.
@@ -41,10 +41,10 @@ That's it, you have added new resource controller which have full access control
  This command can be user to add or remove permission for a given model
  
  ```bash
-// add permission
+## add permission
 php artisan auth:permission Comment
 
-// remove permissions
+## remove permissions
 php artisan auth:permission Comment --remove
 ```
 
