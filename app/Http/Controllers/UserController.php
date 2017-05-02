@@ -53,7 +53,7 @@ class UserController extends Controller
         ]);
 
         // hash password
-        $request->replace(['password' => bcrypt($request->get('password'))]);
+        $request->merge(['password' => bcrypt($request->get('password'))]);
 
         // Create the user
         if ( $user = User::create($request->except('roles', 'permissions')) ) {
