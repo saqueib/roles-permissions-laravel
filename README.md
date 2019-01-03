@@ -10,7 +10,7 @@ A stater kit with Roles and Permissions implementation on Laravel 5.4
 1. Create desired resource by running 
  ```bash
 ## Create Comment model with migration and resource controller
-php artisan make:model Comment -m -c --resource
+php artisan make:model Comment -mcr
 ```
 2. Register route for it.
 ```php
