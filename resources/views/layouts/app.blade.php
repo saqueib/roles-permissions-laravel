@@ -1,132 +1,110 @@
 <!DOCTYPE html>
-<html lang="{{ config('app.locale') }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title') {{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Laravel') }}</title>
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
-{{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css">
-
-    <style>
-        .result-set { margin-top: 1em }
-    </style>
-    <!-- Scripts -->
-    <script>
-        window.Laravel = {!! json_encode([
-            'csrfToken' => csrf_token(),
-        ]) !!};
-    </script>
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-default navbar-static-top">
+        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
-                <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'Laravel') }}
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                    <!-- Collapsed Hamburger -->
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-                        <span class="sr-only">Toggle Navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-
-                    <!-- Branding Image -->
-                    <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
-                    </a>
-                </div>
-
-                <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="nav navbar-nav">
-                        @if (Auth::check())
+                    <ul class="navbar-nav mr-auto">
+                        @auth()
                             @can('view_users')
-                                <li class="{{ Request::is('users*') ? 'active' : '' }}">
-                                    <a href="{{ route('users.index') }}">
-                                        <span class="text-info glyphicon glyphicon-user"></span> Users
+                                <li class="nav-item {{ Request::is('users*') ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ route('users.index') }}">
+                                        😎 Users
                                     </a>
                                 </li>
                             @endcan
 
                             @can('view_posts')
-                                <li class="{{ Request::is('posts*') ? 'active' : '' }}">
-                                    <a href="{{ route('posts.index') }}">
-                                        <span class="text-success glyphicon glyphicon-text-background"></span> Posts
+                                <li class="nav-item {{ Request::is('posts*') ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ route('posts.index') }}">
+                                        🗒 Posts
                                     </a>
                                 </li>
                             @endcan
-                        @endif
+                        @endauth
                     </ul>
 
                     <!-- Right Side Of Navbar -->
-                    <ul class="nav navbar-nav navbar-right">
+                    <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
-                        @if (Auth::guest())
-                            <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('register') }}">Register</a></li>
-                        @else
-
-                            @can('view_roles')
-                            <li class="{{ Request::is('roles*') ? 'active' : '' }}">
-                                <a href="{{ route('roles.index') }}">
-                                    <span class="text-danger glyphicon glyphicon-lock"></span> Roles
-                                </a>
+                        @guest
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
+                            @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                </li>
+                            @endif
+                        @else
+                            @can('view_roles')
+                                <li class="nav-item {{ Request::is('roles*') ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ route('roles.index') }}">
+                                        🔒 Roles
+                                    </a>
+                                </li>
                             @endcan
-
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->name }}
-                                    <span class="label label-success">{{ Auth::user()->roles->pluck('name')->first() }}</span>
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ auth()->user()->name }}
+                                    <span class="badge badge-warning">{{ auth()->user()->roles->first()->name }}</span>
                                     <span class="caret"></span>
                                 </a>
 
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <a href="{{ route('logout') }}"
-                                            onclick="event.preventDefault();
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                            <i class="glyphicon glyphicon-log-out"></i> Logout
-                                        </a>
+                                        {{ __('Logout') }}
+                                    </a>
 
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
-                                    </li>
-                                </ul>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </div>
                             </li>
-                        @endif
+                        @endguest
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <div class="container">
-            <div id="flash-msg">
-                @include('flash::message')
+        <main class="py-4">
+            <div class="container">
+                <div id="flash-msg">
+                    @include('flash::message')
+                </div>
+                @yield('content')
             </div>
-            @yield('content')
-        </div>
+        </main>
     </div>
-
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
-
-    @stack('scripts')
-
-    <script>
-        $(function () {
-            // flash auto hide
-            $('#flash-msg .alert').not('.alert-danger, .alert-important').delay(6000).slideUp(500);
-        })
-    </script>
 </body>
 </html>

@@ -1,10 +1,12 @@
 # Roles Permissions Laravel (RPL)
-A stater kit with Roles and Permissions implementation on Laravel 5.4
+A stater kit with Roles and Permissions implementation on Laravel 5.7
 
 ### Install
 1. To use it just clone the repo and composer install.
-2. Set the database connection 
-3. To test the app run `php artisan db:seed`, our [interactive seeder](http://www.qcode.in/advance-interactive-database-seeding-in-laravel/) will take care of everything.
+2. `cp .env.example .env`
+3. Update the database credentials in `.env`
+4. run `php artisan key:generate`
+5. To test the app run `php artisan db:seed`, our [interactive seeder](http://www.qcode.in/advance-interactive-database-seeding-in-laravel/) will take care of everything.
 
 ### Add a new Resource
 1. Create desired resource by running 
@@ -47,6 +49,8 @@ php artisan auth:permission Comment
 ## remove permissions
 php artisan auth:permission Comment --remove
 ```
+
+Checkout the official [laravel-permission package dock](https://github.com/spatie/laravel-permission) for more info.
 
 ### Author
 Created by [QCode.in](http://www.qcode.in)
